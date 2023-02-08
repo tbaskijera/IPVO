@@ -15,7 +15,7 @@ services:
   tensorflow-serving:
     image: tensorflow/serving
     volumes:
-      - ./resnet:/models/resnet
+      - ./boston_model:/models/boston_model
     ports:
       - "8501:8501" # za REST
 
