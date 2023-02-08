@@ -1,0 +1,1 @@
+CREATE TABLE predictions (event_id INT PRIMARY KEY AUTO_INCREMENT, request VARCHAR(100),response VARCHAR(100), time_of_request TIME, time_of_response TIME;
