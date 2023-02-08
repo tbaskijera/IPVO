@@ -4,7 +4,7 @@ const path = require('path');
 const http = require('http');
 const bodyParser = require('body-parser');
 // api.js for the routes
-const api = require('.api');
+const api = require('./api');
 const app = express();
 // body parsing middleware
 app.use(bodyParser.json());
