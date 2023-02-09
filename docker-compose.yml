@@ -10,7 +10,7 @@ services:
       - "3306:3306"
     restart: always
     healthcheck:
-      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-ppass" ]
       timeout: 20s
       retries: 10
 
@@ -21,6 +21,15 @@ services:
       - "8501:8501"
     restart: always
 
+  nginx:
+    image: nginx:latest
+    ports: 
+      - "80:80"
+    volumes:
+      - ./client:/usr/share/nginx/html
+    container_name: nigix
+
+
   server:
     build: ./server
     container_name: server-container
@@ -30,3 +39,4 @@ services:
     depends_on:
       database:
         condition: service_healthy
+
