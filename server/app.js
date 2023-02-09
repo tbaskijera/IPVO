@@ -1,5 +1,6 @@
 // app.js
 const express = require('express');
+const fs = require('fs')
 const path = require('path');
 const http = require('http');
 const bodyParser = require('body-parser');
@@ -15,6 +16,11 @@ app.use('/', api);
 const port = process.env.PORT || '3000';
 app.set('port', port);
 // HTTP server creation
-const server = http.createServer(app);
+
+//const server = http.createServer(app);
+const server = http.createServer((req, res) => {
+    res.writeHead(200, { 'content-type': 'text/html' })
+    fs.createReadStream('index.html').pipe(res)
+  })
 // listening all incoming requests on the set port
-server.listen(port, () => console.log(`backend running on port:${port}`));
+server.listen(port, () => console.log(`Server running on port:${port}`));
