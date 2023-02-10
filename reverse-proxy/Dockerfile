@@ -1,2 +1,7 @@
 FROM nginx
-COPY ./default.conf /etc/nginx/conf.d/
+
+WORKDIR /etc/nginx
+COPY ./konfa.conf ./conf.d/default.conf
+EXPOSE 80
+ENTRYPOINT [ "nginx" ]
+CMD [ "-g", "daemon off;" ]
