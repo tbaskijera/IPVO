@@ -17,8 +17,20 @@ var corsOptions = {
 }
 // initial connection
 con.connect(function(err) {
-    if(err) console.log(err);
+    if(err) throw err;
+    console.log("Connected to MYSQL");
+
+    con.query('SELECT * FROM predictions', function (err, rows, fields) {
+        if (err) throw err;
+        console.log(rows);
+      });
 });
+
+con.query("INSERT INTO predictions (request, response, time_of_request, time_of_response) VALUES ('request', 'response', TIME (NOW()), TIME (NOW()))", function (err, result) {
+    if (err) throw err;
+    console.log("Data written to the database!");
+  });
+
 
 // our simple get /jobs API
 router.get('/jobs', cors(corsOptions), (req, res) => {
