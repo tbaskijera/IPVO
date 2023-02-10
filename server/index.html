@@ -51,10 +51,8 @@
   </form>
 
   <script>
-
-
     const form = document.querySelector("#myForm");
-    form.addEventListener("submit", function (event) {
+    form.addEventListener("submit", async function (event) {
       event.preventDefault();
 
       const instance1 = document.querySelector("#crim").value;
@@ -91,22 +89,29 @@
 
       const payload = JSON.stringify({ instances });
       const url = "http://ipvo.to/api";
-      fetch(url, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: payload,
-      })
-        .then(response => response.json())
-        .then(data => {
-          console.log(data);
-          // Do something with the response data
-        })
-        .catch(error => {
-          console.log(error);
+      try {
+        const request_time = new Date();
+        const response = await fetch(url, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: payload,
         });
+        const response_time = new Date();
+        const data = await response.json();
+        console.log(data);
+        console.log(request_time)
+        console.log(response_time)
+        console.log(Math.abs(response_time - request_time)) // vrijeme proteklo u milisekundama
+        // Do something with the response data
+      } catch (error) {
+        console.error(error);
+      }
     });
+
+
+
   </script>
 
 </body>
