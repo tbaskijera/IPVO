@@ -45,25 +45,30 @@
     <label for="lstat">% lower status of the population</label><br>
     <input type="number" id="lstat" name="lstat" step=".01"><br>
 
-    <label for="rm">Predicted value - MEDV - Median value of owner-occupied homes in $1000's</label><br>
-    <p id="predict"></p>
-    <button type="submit">Submit</button>
+    <br>
+
+    <button type="submit">Submit</button> <br>
+
+    <br>
+
+    <label for="rm">Predicted value - MEDV - Median value of
+      owner-occupied homes in
+      $1000's: </label>
+    <p id="predict"> </p>
   </form>
+
+  <button onclick="location.reload(); event.stopPropagation();">Refresh</button><br>
 
   <script>
 
-    let varijabla = 0.0;
-    function changeVariable(value) {
-      myGlobalVariable = value;
-    }
+    let prediction;
 
-    document.addEventListener("valueChanged", function() {
-      console.log(myGlobalVariable);
-      alert("Predikcija za MEDV je: " + myGlobalVariable);
+    document.addEventListener("valueChanged", function () {
+      alert("New entry added to database!");
     });
 
     function updateValue(value) {
-      changeVariable(value);
+      prediction = value["predictions"][0][0];
       const event = new Event("valueChanged");
       document.dispatchEvent(event);
     }
@@ -71,7 +76,7 @@
     const form = document.querySelector("#myForm");
     form.addEventListener("submit", async function (event) {
       event.preventDefault();
-      
+
       const instance1 = document.querySelector("#crim").value;
       const instance2 = document.querySelector("#zn").value;
       const instance3 = document.querySelector("#indus").value;
@@ -121,15 +126,14 @@
         console.log(request_time)
         console.log(response_time)
         console.log(Math.abs(response_time - request_time)) // vrijeme proteklo u milisekundama
-        // Do something with the response data
+
+        updateValue(data);
         const request_db = payload;
-        const response_db = JSON.stringify(data);
-        updateValue(response_db); 
         const time_request = request_time;
         const time_response = response_time;
-        console.log('db upis:' + request_db + response_db + time_request + time_response)
-        document.querySelector("#predict").innerHTML = response_db;
-        } catch (error) {
+        console.log('DB entry:' + request_db + JSON.stringify(data) + time_request + time_response)
+        document.querySelector("#predict").innerHTML = prediction;
+      } catch (error) {
         console.error(error);
       }
       // setTimeout(function() {
