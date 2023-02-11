@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Tu ispisat bazu samo</title>
+    <div id="data-container"></div>
+</head>
+
+<body>
+    Bokic
+    <script>
+        const dataContainer = document.getElementById("data-container");
+        async function fetchData() {
+            try {
+                const response = await fetch('http://ipvo.to/db/get');
+                const data = await response.json();
+                console.log(data);
+                dataContainer.innerText = JSON.stringify(data)
+            } catch (error) {
+                console.error(error);
+            }
+        }
+
+        fetchData();
+
+
+    </script>
+</body>
+
+</html>
