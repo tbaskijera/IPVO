@@ -59,9 +59,7 @@
 
     document.addEventListener("valueChanged", function() {
       console.log(myGlobalVariable);
-      setTimeout(function() {
-          alert("Predikcija za MEDV je: " + myGlobalVariable);
-        }, 10000); 
+      alert("Predikcija za MEDV je: " + myGlobalVariable);
     });
 
     function updateValue(value) {
