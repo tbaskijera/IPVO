@@ -1,148 +1,16 @@
 <!DOCTYPE html>
 <html>
 
+<head>
+    <title>Express Routes</title>
+</head>
+
 <body>
-
-  <h2>Number input fields</h2>
-
-  <form id="myForm">
-    <label for="crim">per capita crime rate by town</label><br>
-    <input type="number" id="crim" name="crim" step=".01"><br>
-
-    <label for="zn">proportion of residential land zoned for lots over 25,000 sq.ft.</label><br>
-    <input type="number" id="zn" name="zn" step=".01"><br>
-
-    <label for="indus">proportion of non-retail business acres per town </label><br>
-    <input type="number" id="indus" name="indus" step=".01"><br>
-
-    <label for="chas">Charles River dummy variable (= 1 if tract bounds river; 0 otherwise)</label><br>
-    <input type="number" id="chas" name="chas" step=".01"><br>
-
-    <label for="nox">nitric oxides concentration (parts per 10 million)</label><br>
-    <input type="number" id="nox" name="nox" step=".01"><br>
-
-    <label for="rm">average number of rooms per dwelling</label><br>
-    <input type="number" id="rm" name="rm" step=".01"><br>
-
-    <label for="age">proportion of owner-occupied units built prior to 1940</label><br>
-    <input type="number" id="age" name="age" step=".01"><br>
-
-    <label for="dis">weighted distances to five Boston employment centres</label><br>
-    <input type="number" id="dis" name="dis" step=".01"><br>
-
-    <label for="rad">index of accessibility to radial highways</label><br>
-    <input type="number" id="rad" name="rad" step=".01"><br>
-
-    <label for="tax">full-value property-tax rate per $10,000</label><br>
-    <input type="number" id="tax" name="tax" step=".01"><br>
-
-    <label for="ptratio">pupil-teacher ratio by town</label><br>
-    <input type="number" id="ptratio" name="ptratio" step=".01"><br>
-
-    <label for="b">1000(Bk - 0.63)^2 where Bk is the proportion of blacks by town</label><br>
-    <input type="number" id="b" name="b" step=".01"><br>
-
-    <label for="lstat">% lower status of the population</label><br>
-    <input type="number" id="lstat" name="lstat" step=".01"><br>
-
-    <br>
-
-    <button type="submit">Submit</button> <br>
-
-    <br>
-
-    <label for="rm">Predicted value - MEDV - Median value of
-      owner-occupied homes in
-      $1000's: </label>
-    <p id="predict"> </p>
-  </form>
-
-  <button onclick="location.reload(); event.stopPropagation();">Refresh</button><br>
-
-  <script>
-
-    let prediction;
-
-    document.addEventListener("valueChanged", function () {
-      alert("New entry added to database!");
-    });
-
-    function updateValue(value) {
-      prediction = value["predictions"][0][0];
-      const event = new Event("valueChanged");
-      document.dispatchEvent(event);
-    }
-
-    const form = document.querySelector("#myForm");
-    form.addEventListener("submit", async function (event) {
-      event.preventDefault();
-
-      const instance1 = document.querySelector("#crim").value;
-      const instance2 = document.querySelector("#zn").value;
-      const instance3 = document.querySelector("#indus").value;
-      const instance4 = document.querySelector("#chas").value;
-      const instance5 = document.querySelector("#nox").value;
-      const instance6 = document.querySelector("#rm").value;
-      const instance7 = document.querySelector("#age").value;
-      const instance8 = document.querySelector("#dis").value;
-      const instance9 = document.querySelector("#rad").value;
-      const instance10 = document.querySelector("#tax").value;
-      const instance11 = document.querySelector("#ptratio").value;
-      const instance12 = document.querySelector("#b").value;
-      const instance13 = document.querySelector("#lstat").value;
-
-      const instances = [
-        [
-          Number(instance1),
-          Number(instance2),
-          Number(instance3),
-          Number(instance4),
-          Number(instance5),
-          Number(instance6),
-          Number(instance7),
-          Number(instance8),
-          Number(instance9),
-          Number(instance10),
-          Number(instance11),
-          Number(instance12),
-          Number(instance13)
-        ]
-      ];
-
-      const payload = JSON.stringify({ instances });
-      const url = "http://ipvo.to/api";
-      try {
-        const request_time = new Date();
-        const response = await fetch(url, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: payload,
-        });
-        const response_time = new Date();
-        const data = await response.json();
-        console.log(data);
-        console.log(request_time)
-        console.log(response_time)
-        console.log(Math.abs(response_time - request_time)) // vrijeme proteklo u milisekundama
-
-        updateValue(data);
-        const request_db = payload;
-        const time_request = request_time;
-        const time_response = response_time;
-        console.log('DB entry:' + request_db + JSON.stringify(data) + time_request + time_response)
-        document.querySelector("#predict").innerHTML = prediction;
-      } catch (error) {
-        console.error(error);
-      }
-      // setTimeout(function() {
-      //   location.reload();
-      // }, 10000);
-    });
-
-  </script>
-
+    <h1>Express Routes</h1>
+    <ul>
+        <li><a href="/predict">Predict</a></li>
+        <li><a href="/db">Db</a></li>
+    </ul>
 </body>
 
 </html>
