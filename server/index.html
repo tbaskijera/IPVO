@@ -46,14 +46,34 @@
     <input type="number" id="lstat" name="lstat" step=".01"><br>
 
     <label for="rm">Predicted value - MEDV - Median value of owner-occupied homes in $1000's</label><br>
+    <p id="predict"></p>
     <button type="submit">Submit</button>
   </form>
 
   <script>
+
+    let varijabla = 0.0;
+    function changeVariable(value) {
+      myGlobalVariable = value;
+    }
+
+    document.addEventListener("valueChanged", function() {
+      console.log(myGlobalVariable);
+      setTimeout(function() {
+          alert("Predikcija za MEDV je: " + myGlobalVariable);
+        }, 10000); 
+    });
+
+    function updateValue(value) {
+      changeVariable(value);
+      const event = new Event("valueChanged");
+      document.dispatchEvent(event);
+    }
+
     const form = document.querySelector("#myForm");
     form.addEventListener("submit", async function (event) {
       event.preventDefault();
-
+      
       const instance1 = document.querySelector("#crim").value;
       const instance2 = document.querySelector("#zn").value;
       const instance3 = document.querySelector("#indus").value;
@@ -106,15 +126,18 @@
         // Do something with the response data
         const request_db = payload;
         const response_db = JSON.stringify(data);
+        updateValue(response_db); 
         const time_request = request_time;
         const time_response = response_time;
         console.log('db upis:' + request_db + response_db + time_request + time_response)
+        document.querySelector("#predict").innerHTML = response_db;
         } catch (error) {
         console.error(error);
       }
+      // setTimeout(function() {
+      //   location.reload();
+      // }, 10000);
     });
-
-
 
   </script>
 
