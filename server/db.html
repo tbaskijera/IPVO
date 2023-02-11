@@ -3,26 +3,96 @@
 
 <head>
     <title>Tu ispisat bazu samo</title>
-    <div id="data-container"></div>
 </head>
 
-<body>
+<body onload="displayDB()">
+    <div id="dataContainer"></div>
     Bokic
     <script>
         const dataContainer = document.getElementById("data-container");
         async function fetchData() {
             try {
                 const response = await fetch('http://ipvo.to/db/get');
-                const data = await response.json();
-                console.log(data);
-                dataContainer.innerText = JSON.stringify(data)
+                const jsonData = await response.json();
+                const data = JSON.stringify(jsonData);
+                // console.log(data);
+                return data;
+
             } catch (error) {
                 console.error(error);
+                return error;
             }
         }
 
-        fetchData();
+        async function displayDB(){
+            const container = document.getElementById("dataContainer");
 
+            const dataDB = JSON.parse(await fetchData().then(res => {
+                return res;
+            }));
+            console.log("Fetch data: " + dataDB);
+
+            const table = document.createElement("table");
+            const headerRow = document.createElement("tr");
+
+            const idHeader = document.createElement("th");
+            idHeader.innerHTML = "id";
+            headerRow.appendChild(idHeader);
+
+            const requestHeader = document.createElement("th")
+            requestHeader.innerHTML = "request";
+            headerRow.appendChild(requestHeader);
+
+            const responseHeader = document.createElement("th");
+            responseHeader.innerHTML = "response";
+            headerRow.appendChild(responseHeader);
+
+            const timeReq = document.createElement("th");
+            timeReq.innerHTML = "time_of_request";
+            headerRow.appendChild(timeReq);
+
+            const timeRes = document.createElement("th");
+            timeRes.innerHTML = "time_of_response";
+            headerRow.appendChild(timeRes);
+
+            const timeElapsed = document.createElement("th");
+            timeElapsed.innerHTML = "time_elapsed";
+            headerRow.appendChild(timeElapsed);
+
+            table.appendChild(headerRow);
+
+            for(const item of dataDB) {
+                const row = document.createElement("tr");
+
+                const idCell = document.createElement("td");
+                idCell.innerHTML = item.id;
+                row.appendChild(idCell);
+
+                const requestCell = document.createElement("td");
+                requestCell.innerHTML = item.request;
+                row.appendChild(requestCell);
+
+                const responseCell = document.createElement("td");
+                responseCell.innerHTML = item.response;
+                row.appendChild(responseCell);
+
+                const timeOfRequestCell = document.createElement("td");
+                timeOfRequestCell.innerHTML = item.time_of_request;
+                row.appendChild(timeOfRequestCell);
+
+                const timeOfResponseCell = document.createElement("td");
+                timeOfResponseCell.innerHTML = item.time_of_response;
+                row.appendChild(timeOfResponseCell);
+
+                const timeOElapsedCell = document.createElement("td");
+                timeOElapsedCell.innerHTML = item.time_elapsed;
+                row.appendChild(timeOElapsedCell);
+
+                table.appendChild(row);
+            }
+
+            container.appendChild(table);
+        }
 
     </script>
 </body>
