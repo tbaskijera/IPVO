@@ -252,19 +252,17 @@ Peti blok sa lokacijom ```/``` zahtjeve prosljeđuje na URL <http://127.0.0.1:30
 
 ### tensorflow-serving
 
-U stvorenom direktoriju ```IPVO``` potrebno je novi direktorij pod nazivom ```tensorflow-serving``` u kojem ćemo kreirati ```Dockerfile``` za izgradnju kontenjera te dvije ```Python``` skripte, jednu za treniranje modela ```train.py``` i skripta za predikciju ```predict.py```
+U stvorenom direktoriju `IPVO` potrebno je novi direktorij pod nazivom `tensorflow-serving` u kojem ćemo kreirati `Dockerfile` za izgradnju kontenjera.
 
 ```bash
 ~/IPVO$ mkdir tensorflow-serving
 ~/IPVO$ cd tensorflow-serving
 ~/IPVO/database$ touch Dockerfile
-~/IPVO/database$ touch train.py
-~/IPVO/database$ touch predict.py
-```
+``` 
+Kao što je prije spomenuto kreirat će se kontenjer pod imenom `tensorflow-serving-container `. 
+Sadržaj pripadnog `Dockerfilea`:
 
-Kao što je prije spomenuto kreirat će se kontenjer pod imenom ```tensorflow-serving-container```. Kao i kod ostalih kontenjera prvo ćemo opisati njegovo kreiranje kroz ```Dockerfile```. Dockerfile izgleda ovako:
-
-``` dockerfile
+```Dockerfile
 FROM tensorflow/serving:latest
 WORKDIR /app
 COPY . /app
@@ -272,12 +270,15 @@ ENV MODEL_NAME boston_model
 ENV MODEL_BASE_PATH /app/
 EXPOSE 8501
 CMD ["sh", "-c", "tensorflow_model_server --model_name=$MODEL_NAME --model_base_path=$MODEL_BASE_PATH"]
-```
+``` 
 
-Naredba ```FROM``` koristit će ```tensorflow/serving``` sliku pri kreiranju ovog kontenjera te će ta slika biti najnovija verzija koja je dostupna zahvaljujući ```latest``` inačici. Sljedeća naredba ```WORKDIR``` kreirat će nam radni direktorij pod nazivom ```/app``` taj direktorij smo kreirali jer će se kasnije koristiti. Naredba ```COPY``` kopirat će direktorij koji smo prije kreirali na mjesto ```./app```. Pomoću naredbe ```ENV MODEL_NAME``` kreirat ćemo okruženje za model pod nazivom ```boston_model``` i pomoću naredbe ```ENV MODEL_BASE_PATH``` ćemo kreirati putanju modelu koji smo prije kreirali a ta putanja je  ```/app/```. Naredbom ```EXPOSE``` namjestili smo da kontenjer sluša port ```8501``` prilikom pokretanja. Naredbom ```CMD``` definirat ćemo koja će se naredba pokrenuti prilikom pokretanja kontenjera. Naredba koja će se pokrenuti:
- ```["sh", "-c", "tensorflow_model_server --model_name=$MODEL_NAME --model_base_path=$MODEL_BASE_PATH"]```
-Pokretanjem naredbe kreirat će se ```tensorflow_model_server“ sa prije definiranim imenom```boston_model```i njegovom putanjom```/app/```.
+Naredba `FROM` koristit se za stvaranje slike `tensorflow/serving` koja se skida iz `Docker Huba`, a `latest` označava da se radi o najnovijoj verziji slike. Sljedeća naredba `WORKDIR` postavlja radni direktorij na `/app`. Naredba `COPY` kopira sav sadržaj trenutnog direktorija u `/app` direktorij u `Docker` kontejneru. Naredba `ENV MODEL_NAME` kreira varijablu okruženja `MODEL_NAME` te joj vrijednost postavlja na ```boston_model```, a varijabli okoline `MODEL_BASE_PATH` postavlja vrijdnost `/app/`. Nadalje, postavlja se port ```8501``` na koji sluša kontejner. Pomoću `CMD` se definiraju naredbe koje je potrebno pokrenuti čim se pokrene kontejner. U ovom slučaju je to naredba 
+ `["sh", "-c", "tensorflow_model_server --model_name=$MODEL_NAME --model_base_path=$MODEL_BASE_PATH"]`
+Pokretanje shella je definirano pomoću `sh`, `-c` označava da naredba koja slijedi se treba pokrenuti u shellu, `tensorflow_model_server` je program naredbenog retka koji nudi `TensorFlow` i pokreće TensorFlow Serving REST API, argumenti koji slijede `--model_name` i `--model_base_path` označavaju ime i putanju do modela koji služi za stvarnje predikcija.
+
+Model i pripadne datoteke za stvaranje modela (`predict.py` i `train.py`) nismo sami kreirali, već smo preuzeli postojeće na [poveznici](https://towardsdatascience.com/hosting-models-with-tf-serving-on-docker-aceff9fbf533).
+
 
 ## Literatura
-
-[1] <https://stackoverflow.com/questions/38346847/nginx-docker-container-502-bad-gateway-response>
+[1] <https://stackoverflow.com/questions/38346847/nginx-docker-container-502-bad-gateway-response>  
+[2] <https://towardsdatascience.com/hosting-models-with-tf-serving-on-docker-aceff9fbf533>
