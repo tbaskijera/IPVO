@@ -139,6 +139,86 @@ Pomoću ove ```SQL``` naredbe kreirali smo tablicu pod imenom ```prediction``` u
 
 ### reverse-proxy
 
+U stvorenom direktoriju ```IPVO``` potrebno je svoriti novi direktorij ```reverse-proxy``` u kojem će se nalaziti datoteke ```Dockerfile```za izgradnju kontejnera sa ```nginx```-om i ```konfa.conf``` konfiguracijskom datotekom.
+
+```bash
+~/IPVO$ ls -a
+. .. database
+~/IPVO$ mkdir reverse-proxy
+~/IPVO$ cd reverse-proxy
+~/IPVO/reverse-proxy$ touch Dockerfile
+~/IPVO/reverse-proxy$ touch konfa.conf
+```
+
+Sadržaj datoteke ```Dockerfile``` je sljedeći:
+
+```Dockerfile
+FROM nginx
+WORKDIR /etc/nginx
+COPY ./konfa.conf ./conf.d/default.conf
+EXPOSE 80
+ENTRYPOINT [ "nginx" ]
+CMD [ "-g", "daemon off;" ]
+```
+
+Za stvaranje kontejera se koristi slika ```nginx``` koja se skida iz ```Docker Hub```-a. Naredba ```WORKDIR``` postavlja radni direktorij na ```/etc/nginx``` unutar kontejnera. Datoteka ```konfa.conf``` se kopira u direktorij ```/etc/nginx/conf.d``` te se preimenuje u ```default.conf```. Nadalje, postavlja se port ```80``` na koji sluša kontejner. Naredba ```ENTRYPOINT``` služi za dodavanje naredbe ```nginx``` koja će se pokrenuti kada se pokrene kontejner. Pomoću ```CMD``` dodajemo argumente za naredbu ```nginx```, a u našem slučaju to su ```-g``` za kreiranje globalnih direktiva za ```Nginx``` i ```daemon off``` koji onemogućava pokretanje ```Nginx```-a u pozadini odnosno ```Nginx``` se pokreće u prvom planu kako bi se mogli čitati logovi.
+
+Sadržaj konfiguracijske datoteke ```konfa.conf``` je sljedeći:
+
+```conf
+server {
+  
+  listen 80;
+  listen [::]:80;
+
+  server_name ipvo.to;
+
+  location /db/post {
+    proxy_pass http://127.0.0.1:3000/db/post;
+    proxy_connect_timeout 1000;
+    proxy_send_timeout 1000;
+    proxy_read_timeout 1000;
+    send_timeout 1000;
+  }
+
+  location /db/get {
+    proxy_pass http://127.0.0.1:3000/db/get;
+  }
+
+  location /api {
+    proxy_pass http://127.0.0.1:8501/v1/models/boston_model:predict;
+    proxy_redirect     off;
+    proxy_set_header   Host $host;
+    proxy_set_header   X-Real-IP $remote_addr;
+    proxy_set_header   X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header   X-Forwarded-Host $server_name;
+    add_header Access-Control-Allow-Origin *;
+  }
+
+  location /predict {
+    proxy_pass http://127.0.0.1:3000/predict;
+  }
+
+  location / {
+    proxy_pass http://127.0.0.1:3000/;
+  }
+}
+```
+
+Na početku konfiguracijske datoteke postavljen je port ```80``` za HTTP zahtjeve i port ```80``` za zahtjeve kreirane pomoću IPv6 adresa. Nakon toga je postavljen naziv servera ```server_name``` na ```ipvo.to```.
+
+Definirano je pet blokova sa lokacijama i pravilima prosljeđivanja.
+
+Prvi blok sa lokacijom ```/db/post``` definira da se zahtjevi na toj lokaciji prosljeđuju na URL <http://127.0.0.1:3000/db/post>. Naredbe ```proxy_connect_timeout```, ```proxy_send_timeout```, ```proxy_read_timeout``` i ```send_timeout``` koriste se za postavljanje vremenskih ograničenja na proxy vezu. Vremena čekanja osiguravaju da zahtjevi ne stoje beskonačno dugo ako je proxy poslužitelj slučajno nedostupan.
+
+Drugi blok sa lokacijom ```/db/get``` definira pomoću naredbe ```proxy_pass``` da se svi zahtjevi preusmjeravaju na URL <http://127.0.0.1:3000/db/get>
+
+Treći blok sa lokacijom ```/api``` zahtjeve prosljeđuje na URL <http://127.0.0.1:8501/v1/models/boston_model:predict> na kojem se izvršavaju predviđanja za unesene podatke.Direktiva ```proxy_redirect``` postavljena je na ```off```, što znači da ```Nginx``` neće pratiti preusmjeravanja s proxy poslužitelja. Direktive ```proxy_set_header``` prosljeđuju informacije o izvornom zahtjevu proxy poslužitelju, uključujući host, pravu IP adresu klijenta, host poslužitelja i IP adresu klijenta. Za dodavanje zaglavlja se koristi direktiva ```add_header Access-Control-Allow-Origin *```. Takvo zaglavlje dozvoljava "cros-origin" dijeljenje resursa sa raznih domena.
+
+Četvrti blok sa lokacijom ```/predict``` zahtjeve prosljeđuje na URL <http://127.0.0.1:3000/predict> pomoću direktive ```proxy_pass```.
+
+Peti blok sa lokacijom ```/``` zahtjeve prosljeđuje na URL <http://127.0.0.1:3000/> pomoću direktive ```proxy_pass```.
+
 ### server
 
 ### tensorflow-serving
