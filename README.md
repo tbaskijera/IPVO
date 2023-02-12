@@ -143,6 +143,21 @@ Pomoću ove ```SQL``` naredbe kreirali smo tablicu pod imenom ```prediction``` u
 
 ### tensorflow-serving
 
+Drugi po redu kreirat će se kontenjer pod imenom ```tensorflow-serving-container ```. Kao i kod ostalih kontenjera prvo ćemo opisati njegovo kreiranje kroz ```Dockerfile ``` koji se nalazi u direktoriju ```./tensorflow-serving ```. Dockerfile izgleda ovako:
+``` dockerfile
+FROM tensorflow/serving:latest
+WORKDIR /app
+COPY . /app
+ENV MODEL_NAME boston_model
+ENV MODEL_BASE_PATH /app/
+EXPOSE 8501
+CMD ["sh", "-c", "tensorflow_model_server --model_name=$MODEL_NAME --model_base_path=$MODEL_BASE_PATH"]
+``` 
+Naredba ```FROM``` koristit će ```tensorflow/serving``` sliku pri kreiranju ovog kontenjera te će ta slika biti najnovija verzija koja je dostupna zahvaljujući ```latest``` inačici. Sljedeća naredba ```WORKDIR``` kreirat će nam radni direktorij pod nazivom ```/app``` taj direktorij smo kreirali jer će se kasnije koristiti. Naredba ```COPY``` kopirat će direktorij koji smo prije kreirali na mjesto ```./app```. Pomoću naredbe ```ENV MODEL_NAME``` kreirat ćemo okruženje za model pod nazivom ```boston_model``` i pomoću naredbe ```ENV MODEL_BASE_PATH``` ćemo kreirati putanju modelu koji smo prije kreirali a ta putanja je  ```/app/```. Naredbom ```EXPOSE``` namjestili smo da kontenjer sluša port ```8501``` prilikom pokretanja. Naredbom ``` CMD ``` definirat ćemo koja će se naredba pokrenuti prilikom pokretanja kontenjera. Naredba koja će se pokrenuti:
+ ```["sh", "-c", "tensorflow_model_server --model_name=$MODEL_NAME --model_base_path=$MODEL_BASE_PATH"]```
+Pokretanjem naredbe kreirat će se ```tensorflow_model_server“ sa prije definiranim imenom ```boston_model``` i njegovom putanjom ```/app/```.
+
+
 
 ## Literatura
 [1] <https://stackoverflow.com/questions/38346847/nginx-docker-container-502-bad-gateway-response>
