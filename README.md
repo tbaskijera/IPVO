@@ -7,7 +7,7 @@ toni@toni-WRT-WX9:~/IPVO$ curl -s https://storage.googleapis.com/download.tensor
 
 ## Nez kako to nazvat
 
-Prije samog početka postavljanja ```Docker``` kompozicije za infrastrukturu sa elemenitima umjetne inteligencije potrebno je provjeriti verziju ```Docker```-a i ```Docker-compose```-a. To činimo pokretanjem naredbi:
+Prije samog početka postavljanja Docker kompozicije za infrastrukturu sa elemenitima umjetne inteligencije potrebno je provjeriti verziju Docker-a i Docker-compose-a. To činimo pokretanjem naredbi:
 
 ```bash
 $ docker --version
@@ -21,7 +21,7 @@ $ docker-compose --version
 docker-compose version 1.29.2, build unknown
 ```
 
-Kada se uvjerimo da su ```Docker``` i ```Docker-compose``` instalirani stvaramo direktorij u kojem će se nalaziti sve datoteke potrebne za postavljanje ```Docker``` kompozicije za infrastrukturu sa elemenitima umjetne inteligencije.
+Kada se uvjerimo da su Docker i Docker-compose instalirani stvaramo direktorij u kojem će se nalaziti sve datoteke potrebne za postavljanje Docker kompozicije za infrastrukturu sa elemenitima umjetne inteligencije.
 
 ```bash
 $ mkdir IPVO
@@ -36,7 +36,7 @@ $ cd IPVO
 
 ### docker-compose.yml
 
-U novostvrenom direktoriju ```IPVO``` potrebno je kreirati novu datoteku ```docker-compose.yml``` koja omogućava rad i upravljanje sa aplikacijama koje koriste više ```Docker``` kontejnera. Datoteka ima sljedeći sadržaj:
+U novostvrenom direktoriju IPVO potrebno je kreirati novu datoteku ```docker-compose.yml``` koja omogućava rad i upravljanje sa aplikacijama koje koriste više ```Docker``` kontejnera. Datoteka ima sljedeći sadržaj:
 
 ```yml
 version: '3.9'
@@ -111,31 +111,22 @@ Usluga ```reverse-proxy``` koristi prilagođeni kontekst za izgradnju koji se na
 
 ### database
 
-U stvorenom direktoriju ```IPVO``` potrebno je svoriti novi direktorij ```database``` u kojem će se nalaziti datoteke ```Dockerfile```za izgradnju kontejnera sa bazom podataka i ```script.sql``` stvaranje tablice u bazi podtaka.
+Kao što smo prije spomenuli prvi od kontenjera koje smo kreirali je kontenjer ```database-container```. Njegovo kreiranje pokrenuto je kroz Dockerfile koji se nalazi u direktoriju ```./database.``` Sadržaj tog ```Dockerfile```-a je sljedeći:
 
-```bash
-~/IPVO$ mkdir database
-~/IPVO$ cd database
-~/IPVO/database$ touch Dockerfile
-~/IPVO/database$ touch script.sql
-```
-
-Datoteka ```Dockerfile``` ima sljedeći sadržaj:
-
-```Dockerfile
+```dockerfile
 FROM mysql:latest
 ENV MYSQL_DATABASE db
 ENV MYSQL_ROOT_PASSWORD=somePassword
 ADD script.sql /docker-entrypoint-initdb.d
 ```
-
-Stvara se slika ```MYSQL```-a na temelju najnovije slike iz ```Docker Hub```-a. Postavljaju se dvije varijable okruženja sa vrijednostima, a to su ```MYSQL_DATABASE``` sa ```db``` i varijabla ```MYSQL_ROOT_PASSWORD``` sa ```somePassword```. Naredba ```ADD``` dodaje ```script.sql``` datoteku na sliku, odnosno u specijali direktorij ```/docker-entrypoint-initdb.d``` koji pokreće sve skripte odmah nakon pokretanja kontejnera te time određuje da će se skripta pokrenuti kada se pokrene kontejner.
-
-Datoteka ```script.sql``` sadrži ```SQL``` naredbu za stvaranje tablice ```predictions``` sa atributima ```id```, ```request```, ```response```, ```time_of_request```, ```time_of_response``` i ```time_elapsed```.
+Prva naredba je ```FROM``` koja nam specificira koja slika će se koristiti u izgradnji kontenjera tj. u ovom slučaju ```mysql``` i sa najnovijom verzijom zbog latest inačice nakon imena slike. Nakon toga kreirat će se okruženje pomoću naredbe ```ENV```. Prva ```ENV``` naredba kreirat će nam novu mysql bazu pod imenom db, a druga ```ENV``` naredba specificira koja će se lozinka koristiti za administratora. Posljednja nareba ```ADD``` ka skriptu koju ćemo kasnije opisati pod nazivom ```script.sql``` i kopira je u direktorij ```docker-entrypont-initdb.d```. Skripta koju smo spomenuli izgleda ovako:
 
 ```sql
 CREATE TABLE predictions (id INT PRIMARY KEY AUTO_INCREMENT, request VARCHAR(200),response VARCHAR(100), time_of_request VARCHAR(100), time_of_response VARCHAR(100), time_elapsed INT);
 ```
+
+Pomoću ove ```SQL``` naredbe kreirali smo tablicu pod imenom ```predicction``` u koju ćemo spremati naše podatke o predikciji koji će se provoditi. Svaka instanca tablice sastojat će se od: ```id``` cijelobrojna vrijednost koji je primarni ključ i automatski se povećava, ```request``` teksta od 200 znakova koji je upit koji smo napravili na predikciji, ```response``` tekst od 100 znakova koji je odgovor našeg modela na tj. odgovor na predikciju, ```time_of_request``` tekst od 100 znakova koji nam govori kada je upit poslan, ```time_of_response``` tekst od 100 znakova koji nam govori kada je odgovor stigao i ```time_elapsed``` cijelobrojna vrijednost koja nam govori koliko je vremena prošlo između upita i odgovora.
+
 
 ### reverse-proxy
 
@@ -143,8 +134,6 @@ CREATE TABLE predictions (id INT PRIMARY KEY AUTO_INCREMENT, request VARCHAR(200
 
 ### tensorflow-serving
 
-**dodati sliku strukuture direktorija IPVO**
-**dodati izlaz u terminalu i slike kod pokretanja**
 
 ## Literatura
 [1] <https://stackoverflow.com/questions/38346847/nginx-docker-container-502-bad-gateway-response>
