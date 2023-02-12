@@ -142,8 +142,15 @@ Pomoću ove ```SQL``` naredbe kreirali smo tablicu pod imenom ```prediction``` u
 ### server
 
 ### tensorflow-serving
-
-Drugi po redu kreirat će se kontenjer pod imenom ```tensorflow-serving-container ```. Kao i kod ostalih kontenjera prvo ćemo opisati njegovo kreiranje kroz ```Dockerfile ``` koji se nalazi u direktoriju ```./tensorflow-serving ```. Dockerfile izgleda ovako:
+U stvorenom direktoriju ```IPVO``` potrebno je novi direktorij pod nazivom ```tensorflow-serving``` u kojem ćemo kreirati ```Dockerfile``` za izgradnju kontenjera te dvije ```Python``` skripte, jednu za treniranje modela ```train.py``` i skripta za predikciju ```predict.py```
+```bash
+~/IPVO$ mkdir tensorflow-serving
+~/IPVO$ cd tensorflow-serving
+~/IPVO/database$ touch Dockerfile
+~/IPVO/database$ touch train.py
+~/IPVO/database$ touch predict.py
+``` 
+Kao što je prije spomenuto kreirat će se kontenjer pod imenom ```tensorflow-serving-container ```. Kao i kod ostalih kontenjera prvo ćemo opisati njegovo kreiranje kroz ```Dockerfile ```. Dockerfile izgleda ovako:
 ``` dockerfile
 FROM tensorflow/serving:latest
 WORKDIR /app
