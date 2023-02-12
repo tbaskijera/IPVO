@@ -119,13 +119,13 @@ ENV MYSQL_DATABASE db
 ENV MYSQL_ROOT_PASSWORD=somePassword
 ADD script.sql /docker-entrypoint-initdb.d
 ```
-Prva naredba je ```FROM``` koja nam specificira koja slika će se koristiti u izgradnji kontenjera tj. u ovom slučaju ```mysql``` i sa najnovijom verzijom zbog latest inačice nakon imena slike. Nakon toga kreirat će se okruženje pomoću naredbe ```ENV```. Prva ```ENV``` naredba kreirat će nam novu mysql bazu pod imenom db, a druga ```ENV``` naredba specificira koja će se lozinka koristiti za administratora. Posljednja nareba ```ADD``` ka skriptu koju ćemo kasnije opisati pod nazivom ```script.sql``` i kopira je u direktorij ```docker-entrypont-initdb.d```. Skripta koju smo spomenuli izgleda ovako:
+Prva naredba je ```FROM``` koja nam specificira koja slika će se koristiti u izgradnji kontenjera tj. u ovom slučaju ```mysql``` i sa najnovijom verzijom zbog latest inačice nakon imena slike. Nakon toga kreirat će se okruženje pomoću naredbe ```ENV```. Prva ```ENV``` naredba kreirat će nam novu mysql bazu pod imenom db, a druga ```ENV``` naredba specificira koja će se lozinka koristiti za administratora. Posljednja nareba ```ADD``` kopira skriptu koju ćemo kasnije opisati pod nazivom ```script.sql``` i kopira je u direktorij ```docker-entrypont-initdb.d```. Skripta koju smo spomenuli izgleda ovako:
 
 ```sql
 CREATE TABLE predictions (id INT PRIMARY KEY AUTO_INCREMENT, request VARCHAR(200),response VARCHAR(100), time_of_request VARCHAR(100), time_of_response VARCHAR(100), time_elapsed INT);
 ```
 
-Pomoću ove ```SQL``` naredbe kreirali smo tablicu pod imenom ```predicction``` u koju ćemo spremati naše podatke o predikciji koji će se provoditi. Svaka instanca tablice sastojat će se od: ```id``` cijelobrojna vrijednost koji je primarni ključ i automatski se povećava, ```request``` teksta od 200 znakova koji je upit koji smo napravili na predikciji, ```response``` tekst od 100 znakova koji je odgovor našeg modela na tj. odgovor na predikciju, ```time_of_request``` tekst od 100 znakova koji nam govori kada je upit poslan, ```time_of_response``` tekst od 100 znakova koji nam govori kada je odgovor stigao i ```time_elapsed``` cijelobrojna vrijednost koja nam govori koliko je vremena prošlo između upita i odgovora.
+Pomoću ove ```SQL``` naredbe kreirali smo tablicu pod imenom ```prediction``` u koju ćemo spremati naše podatke o predikciji koji će se provoditi. Svaka instanca tablice sastojat će se od: ```id``` cijelobrojna vrijednost koji je primarni ključ i automatski se povećava, ```request``` teksta od 200 znakova koji je upit koji smo napravili na predikciji, ```response``` tekst od 100 znakova koji je odgovor našeg modela na tj. odgovor na predikciju, ```time_of_request``` tekst od 100 znakova koji nam govori kada je upit poslan, ```time_of_response``` tekst od 100 znakova koji nam govori kada je odgovor stigao i ```time_elapsed``` cijelobrojna vrijednost koja nam govori koliko je vremena prošlo između upita i odgovora.
 
 
 ### reverse-proxy
