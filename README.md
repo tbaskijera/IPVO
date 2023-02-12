@@ -4,7 +4,7 @@ Opisati zadatak
 
 ## Inicijalizacija projekta
 
-Prije samog početka postavljanja Docker kompozicije za infrastrukturu s elementima umjetne inteligencije potrebno je provjeriti verziju Dockera i Docker-composea:
+Prije samog početka postavljanja Docker kompozicije za infrastrukturu sa elementima umjetne inteligencije potrebno je provjeriti verziju Dockera i Docker-composea:
 
 ```bash
 $ docker --version
@@ -13,7 +13,7 @@ $ docker-compose --version
 docker-compose version 1.29.2, build 5becea4c
 ```
 
-Kada se uvjerimo da su Docker i Docker-compose instalirani stvorit ćemo korijenski direktorij projekta, u kojem ćemo nakon toga dodati i sve potrebne poddirektorije i datoteke. Krajnja struktura projekta bit će sljedećeg oblika:
+Kada se uvjerimo da su Docker i Docker-compose instalirani stvoriti ćemo korijenski direktorij projekta, u kojem ćemo nakon toga dodati i sve potrebne poddirektorije i datoteke. Krajnja struktura projekta biti će sljedećeg oblika:
 
 ```bash
 $ mkdir IPVO
@@ -122,18 +122,18 @@ Datoteka ```docker-compose.yml``` sadrži četiri servisa od kojih će se svaki 
 - ```server-container```
 - ```reverse-proxy-container```
 
-Usluga baze podataka koristi prilagođeni kontekst za izgradnju koji se nalazi u direktoriju ```./database```. Kontejneru je dodijeljen naziv ```database-container```. Prilikom pokretanja kontejnera pokrenut će se i naredba ```command: --default-authentication-plugin=mysql_native_password``` koja se koristi za provjeru autentičnosti ```MYSQL``` baze podataka, odnosno osigurava da će se provjera autentičnosti izvršiti prilikom povezivanja s istom. Specificirano je mapiranje portova ```3306:3306```, što znači da će se port ```3306``` na hostu mapirati na port ```3306``` u kontejneru. Mapiranje portova omogućava spajanje na bazu podataka koja se izvodi unutar kontejnera, izvana, uz korištenje IP adrese i porta na hostu. Usluga baze podataka je postavljena tako da se ponovno pokreće i provjerava je li u ispravnom stanju pomoću ```healtchecka```.
+Usluga baze podataka koristi prilagođeni kontekst za izgradnju koji se nalazi u direktoriju ```./database```. Kontejneru je dodijeljen naziv ```database-container```. Prilikom pokretanja kontejnera pokrenut će se i naredba ```command: --default-authentication-plugin=mysql_native_password``` koja se koristi za provjeru autentičnosti ```MYSQL``` baze podataka, odnosno osigurava da će se provjera autentičnosti izvršiti prilikom povezivanja s istom. Specificirano je mapiranje portova ```3306:3306```, što znači da će se port ```3306``` na hostu mapirati na port ```3306``` u kontejeru. Mapiranje portova omogućavaja spajanje na bazu podataka koja se izvodi unutar kontejnera, izvana, uz korištenje IP adrese i porta na hostu. Usluga baze podataka je postavljena tako da se ponovno pokreće i provjerava je li u ispravnom stanju pomoću ```healtchecka```.
 Test baze podataka ```healtcheck``` provodi se kako bi se utvrdilo je li kontejner baze podataka ispravno pokrenut i radi li ispravno. Provjera ispravnosti ima nekoliko dijelova u naredbi. To su ```mysqladmin```, koji služi za provjeru ispravnosti ```MYSQL``` baze podataka, ```ping``` , koji šalje ping bazi za provjeru kako bi provjerio je li baza pokrenuta, ```-h``` označava hosta (u našem slučaju je to ```localhost```), zatim ```-uroot``` koji označava korisnika, (u našem slučaju ```root```) i na kraju```-pass```, koji označava lozinku korisnika. Naredba se ne izvršava samo jednom, već se povremeno izvodi. Ako se prilikom prvog pokretanja utvrdi da je baza neispravna test ima vremensko ograničenje od 20 sekundi i nakon toga ponavlja postupak još 10 puta. Ako se baza u nekom trenutku pokrene, i radi ispravno, test se prekida, inače se zaključuje da je baza neispravna.
 
 Usluga ```tensorflow-serving``` koristi prilagođeni kontekst za izgradnju koji se nalazi u direktoriju ```./tensorflow-serving```. Kontejneru je dodijeljen naziv ```tensorflow-serving-container```. Kod navedenog servisa se port ```8501``` na hostu mapira na istog na pripadnom kontejneru, a ostalim kontejnerima se isti i izlaže. Također, usluga ima svojstvo da se uvijek ponovno pokreće.
 
 Usluga ```server``` koristi prilagođeni kontekst za izgradnju koji se nalazi u direktoriju ```./server```. Kontejneru je dodijeljen naziv ```server-container```. Kod navedenog servisa se port ```3000``` na hostu mapira na istog na pripadnom kontejneru, a ostalim kontejnerima se isti i izlaže. Također, usluga ima svojstvo da se uvijek ponovno pokreće, a ovisi o testu ispravnosti baze podataka.
 
-Usluga ```reverse-proxy``` koristi prilagođeni kontekst za izgradnju koji se nalazi u direktoriju ```./reverse-proxy```. Kontejneru je dodijeljen naziv ```reverse-proxy-container```. Svrha ove usluge je da usmjerava promet s hosta na ostale usluge ovisno o potrebi. U konfiguraciji usluge ```network_mode``` postavke hosta se koriste za konfiguraciju mrežnog načina djelovanja kontejnera. Točnije, kontejner koristiti mrežni stog host-a kako ne bi morao stvarati novi mrežni stog za kontejner. Usluga ```reverse-proxy``` ima svojstvo ponovnog pokretanja ako se kontejner zaustavi ili sruši te ovisi o postavljenoj usluzi ```server```.
+Usluga ```reverse-proxy``` koristi prilagođeni kontekst za izgradnju koji se nalazi u direktoriju ```./reverse-proxy```. Kontejneru je dodijeljen naziv ```reverse-proxy-container```. Svrha ove usluge je da usmjerava promet sa hosta na ostale usluge ovisno o potrebi. U konfiguraciji usluge ```network_mode``` postavke hosta se koriste za konfiguraciju mrežnog načina djelovanja kontejnera. Točnije, kontejner koristiti mrežni stog host-a kako ne bi morao stvarati novi mrežni stog za kontejner. Usluga ```reverse-proxy``` ima svojstvo ponovnog pokretanja ako se kontejner zaustavi ili sruši te ovisi o postavljenoj usluzi ```server```.
 
 ### database
 
-Sljedeći direktorij kojeg treba stvoriti je ```database```, u kojem će se nalaziti datoteke ```Dockerfile``` i ```script.sql```,za izgradnju kontejnera s bazom podataka i stvaranje tablice u bazi podataka, respektivno.
+Sljedeći direktorij kojeg treba stvoriti je ```database```, u kojem će se nalaziti datoteke ```Dockerfile``` i ```script.sql```,za izgradnju kontejnera sa bazom podataka i stvaranje tablice u bazi podataka, respektivno.
 
 ```bash
 ~/IPVO$ mkdir database
@@ -142,7 +142,7 @@ Sljedeći direktorij kojeg treba stvoriti je ```database```, u kojem će se nala
 ~/IPVO/database$ touch script.sql
 ```
 
-Kao što smo prije spomenuli, prvi od kontejnera koje smo kreirali je kontejner ```database-container```. Njegovo kreiranje pokrenuto je kroz Dockerfile koji se nalazi u direktoriju ```./database.``` Sadržaj tog ```Dockerfilea``` je sljedeći:
+Kao što smo prije spomenuli, prvi od kontenjera koje smo kreirali je kontejner ```database-container```. Njegovo kreiranje pokrenuto je kroz Dockerfile koji se nalazi u direktoriju ```./database.``` Sadržaj tog ```Dockerfilea``` je sljedeći:
 
 ```dockerfile
 FROM mysql:latest
@@ -151,7 +151,7 @@ ENV MYSQL_ROOT_PASSWORD=somePassword
 ADD script.sql /docker-entrypoint-initdb.d
 ```
 
-Prva naredba je ```FROM``` koja nam specificira koja slika će se koristiti u izgradnji kontejnera, u ovom slučaju ```mysql```, i s najnovijom verzijom zbog `latest` inačice nakon imena slike. Naredbom `ENV` specificirat ćemo varijable okoline, a to su ime baze i lozinka koja će se koristiti za pristup. Posljednja naredba ```ADD``` kopira skriptu (koju ćemo kasnije opisati), naziva ```script.sql``` i kopira je u direktorij ```docker-entrypont-initdb.d```, gdje će se i inicijalizirati.
+Prva naredba je ```FROM``` koja nam specificira koja slika će se koristiti u izgradnji kontenjera, u ovom slučaju ```mysql```, i sa najnovijom verzijom zbog `latest` inačice nakon imena slike. Naredbom `ENV` specificirati ćemo varijable okoline, a to su ime baze i lozinka koja će se koristiti za pristup. Posljednja nareba ```ADD``` kopira skriptu (koju ćemo kasnije opisati), naziva ```script.sql``` i kopira je u direktorij ```docker-entrypont-initdb.d```, gdje će se i incijalizirati.
 
 ```sql
 CREATE TABLE predictions (id INT PRIMARY KEY AUTO_INCREMENT, request VARCHAR(200),response VARCHAR(100), time_of_request VARCHAR(100), time_of_response VARCHAR(100), time_elapsed INT);
@@ -159,14 +159,14 @@ CREATE TABLE predictions (id INT PRIMARY KEY AUTO_INCREMENT, request VARCHAR(200
 
 Pomoću ove ```SQL``` naredbe kreirali smo tablicu pod imenom ```prediction```, u koju ćemo spremati naše podatke o predikcijama koje će se provoditi.
 
-Svaka instanca tablice imat će sljedeće atribute:
+Svaka instanca tablice imati će sljedeće atribute:
 
-- ```id```- cjelobrojna vrijednost koji je primarni ključ i automatski se povećava
+- ```id```- cijelobrojna vrijednost koji je primarni ključ i automatski se povećava
 - `request`- tekst od 200 znakova koji pohranjuje upit koji će biti upućen pametnom modelu
 - ```response```- tekst od 100 znakova koji pohranjuje odgovor našeg modela odnosno odgovor na upit
 - ```time_of_request``` - tekst od 100 znakova koji pohranjuje vrijeme slanja upita
 - `time_of_response`- tekst od 100 znakova koji nam govori kada je odgovor stigao
-- `time_elapsed`- cjelobrojna vrijednost koja nam govori koliko je vremena prošlo između upita i odgovora.
+- `time_elapsed`- cijelobrojna vrijednost koja nam govori koliko je vremena prošlo između upita i odgovora.
 
 ### reverse-proxy
 
@@ -190,7 +190,7 @@ ENTRYPOINT [ "nginx" ]
 CMD [ "-g", "daemon off;" ]
 ```
 
-Za stvaranje kontejnera se koristi slika ```nginx``` koja se skida iz ```Docker Huba```. Naredba ```WORKDIR``` postavlja radni direktorij na ```/etc/nginx``` unutar kontejnera. Datoteka ```myconf.conf``` se kopira u direktorij ```/etc/nginx/conf.d``` te se preimenuje u ```default.conf```. Nadalje, postavlja se port ```80``` na koji kontejner sluša. Naredba ```ENTRYPOINT``` služi za dodavanje naredbe ```nginx``` koja će se pokrenuti pri pokretanju kontejnera. Pomoću naredbe ```CMD``` dodajemo argumente za naredbu ```nginx```, a u našem slučaju to su ```-g```, za kreiranje globalnih direktiva za ```Nginx```, i ```daemon off```, koji onemogućava pokretanje ```Nginx-a``` u pozadini (pokreće se u prvom planu kako bi se mogli čitati logovi).
+Za stvaranje kontejera se koristi slika ```nginx``` koja se skida iz ```Docker Huba```. Naredba ```WORKDIR``` postavlja radni direktorij na ```/etc/nginx``` unutar kontejnera. Datoteka ```myconf.conf``` se kopira u direktorij ```/etc/nginx/conf.d``` te se preimenuje u ```default.conf```. Nadalje, postavlja se port ```80``` na koji kontejner sluša. Naredba ```ENTRYPOINT``` služi za dodavanje naredbe ```nginx``` koja će se pokrenuti pri pokretanju kontejnera. Pomoću naredbe ```CMD``` dodajemo argumente za naredbu ```nginx```, a u našem slučaju to su ```-g```, za kreiranje globalnih direktiva za ```Nginx```, i ```daemon off```, koji onemogućava pokretanje ```Nginx-a``` u pozadini (pokreće se u prvom planu kako bi se mogli čitati logovi).
 
 Sadržaj konfiguracijske datoteke ```myconf.conf``` je sljedeći:
 
@@ -236,23 +236,23 @@ server {
 
 Na početku konfiguracijske datoteke postavljen je port ```80``` za HTTP zahtjeve i port ```80``` za zahtjeve kreirane pomoću IPv6 adresa. Nakon toga je postavljen naziv servera ```server_name``` na ```ipvo.to```.
 
-Definirano je pet blokova s lokacijama i pravilima prosljeđivanja.
+Definirano je pet blokova sa lokacijama i pravilima prosljeđivanja.
 
-Prvi blok s lokacijom ```/db/post``` definira da se zahtjevi na toj lokaciji prosljeđuju na URL <http://127.0.0.1:3000/db/post>. Naredbe ```proxy_connect_timeout```, ```proxy_send_timeout```, ```proxy_read_timeout``` i ```send_timeout``` koriste se za postavljanje vremenskih ograničenja na proxy vezu. Vremena čekanja osiguravaju da zahtjevi ne čekaju beskonačno dugo, u slučaju da je proxy poslužitelj nedostupan.
+Prvi blok sa lokacijom ```/db/post``` definira da se zahtjevi na toj lokaciji prosljeđuju na URL <http://127.0.0.1:3000/db/post>. Naredbe ```proxy_connect_timeout```, ```proxy_send_timeout```, ```proxy_read_timeout``` i ```send_timeout``` koriste se za postavljanje vremenskih ograničenja na proxy vezu. Vremena čekanja osiguravaju da zahtjevi ne čekaju beskonačno dugo, u slučaju da je proxy poslužitelj nedostupan.
 
-Drugi blok s lokacijom ```/db/get``` pomoću naredbe ```proxy_pass``` definira preusmjeravanje svih zahtjeva na URL <http://127.0.0.1:3000/db/get>
+Drugi blok sa lokacijom ```/db/get``` pomoću naredbe ```proxy_pass``` definira presumjeravanje svih zahtjeva na URL <http://127.0.0.1:3000/db/get>
 
-Treći blok s lokacijom ```/api``` zahtjeve prosljeđuje na URL <http://127.0.0.1:8501/v1/models/boston_model:predict> na kojem se izvršavaju predviđanja za unesene podatke. Direktiva ```proxy_redirect``` postavljena je na ```off```, što znači da ```Nginx``` neće pratiti preusmjeravanja s proxy poslužitelja. Direktive ```proxy_set_header``` prosljeđuju informacije o izvornom zahtjevu proxy poslužitelju, uključujući host, pravu IP adresu klijenta, host poslužitelja i IP adresu klijenta. Za dodavanje zaglavlja se koristi direktiva ```add_header Access-Control-Allow-Origin *```. Takvo zaglavlje dozvoljava "cros-origin" dijeljenje resursa s raznih domena.
+Treći blok sa lokacijom ```/api``` zahtjeve prosljeđuje na URL <http://127.0.0.1:8501/v1/models/boston_model:predict> na kojem se izvršavaju predviđanja za unesene podatke. Direktiva ```proxy_redirect``` postavljena je na ```off```, što znači da ```Nginx``` neće pratiti preusmjeravanja s proxy poslužitelja. Direktive ```proxy_set_header``` prosljeđuju informacije o izvornom zahtjevu proxy poslužitelju, uključujući host, pravu IP adresu klijenta, host poslužitelja i IP adresu klijenta. Za dodavanje zaglavlja se koristi direktiva ```add_header Access-Control-Allow-Origin *```. Takvo zaglavlje dozvoljava "cros-origin" dijeljenje resursa sa raznih domena.
 
-Četvrti blok s lokacijom ```/predict``` zahtjeve prosljeđuje na URL <http://127.0.0.1:3000/predict> pomoću direktive ```proxy_pass```.
+Četvrti blok sa lokacijom ```/predict``` zahtjeve prosljeđuje na URL <http://127.0.0.1:3000/predict> pomoću direktive ```proxy_pass```.
 
-Peti blok s lokacijom ```/``` zahtjeve prosljeđuje na URL <http://127.0.0.1:3000/> pomoću direktive ```proxy_pass```.
+Peti blok sa lokacijom ```/``` zahtjeve prosljeđuje na URL <http://127.0.0.1:3000/> pomoću direktive ```proxy_pass```.
 
 ### server
 
 ### tensorflow-serving
 
-U stvorenom direktoriju `IPVO` potrebno je kreirati novi direktorij pod nazivom `tensorflow-serving` u kojem ćemo dodati `Dockerfile` za izgradnju kontejnera.
+U stvorenom direktoriju `IPVO` potrebno je novi direktorij pod nazivom `tensorflow-serving` u kojem ćemo kreirati `Dockerfile` za izgradnju kontenjera.
 
 ```bash
 ~/IPVO$ mkdir tensorflow-serving
@@ -272,9 +272,9 @@ EXPOSE 8501
 CMD ["sh", "-c", "tensorflow_model_server --model_name=$MODEL_NAME --model_base_path=$MODEL_BASE_PATH"]
 ``` 
 
-Naredba `FROM` koristi se za stvaranje slike `tensorflow/serving` koja se skida iz `Docker Huba`, a `latest` označava da se radi o najnovijoj verziji slike. Sljedeća naredba `WORKDIR` postavlja radni direktorij na `/app`. Naredba `COPY` kopira sav sadržaj trenutnog direktorija u `/app` direktorij u `Docker` kontejneru. Naredba `ENV MODEL_NAME` kreira varijablu okruženja `MODEL_NAME` te joj vrijednost postavlja na ```boston_model```, a varijabli okoline `MODEL_BASE_PATH` postavlja vrijednost `/app/`. Nadalje, postavlja se port ```8501``` na koji sluša kontejner. Pomoću `CMD` se definiraju naredbe koje je potrebno pokrenuti čim se pokrene kontejner. U ovom slučaju je to naredba 
+Naredba `FROM` koristit se za stvaranje slike `tensorflow/serving` koja se skida iz `Docker Huba`, a `latest` označava da se radi o najnovijoj verziji slike. Sljedeća naredba `WORKDIR` postavlja radni direktorij na `/app`. Naredba `COPY` kopira sav sadržaj trenutnog direktorija u `/app` direktorij u `Docker` kontejneru. Naredba `ENV MODEL_NAME` kreira varijablu okruženja `MODEL_NAME` te joj vrijednost postavlja na ```boston_model```, a varijabli okoline `MODEL_BASE_PATH` postavlja vrijdnost `/app/`. Nadalje, postavlja se port ```8501``` na koji sluša kontejner. Pomoću `CMD` se definiraju naredbe koje je potrebno pokrenuti čim se pokrene kontejner. U ovom slučaju je to naredba 
  `["sh", "-c", "tensorflow_model_server --model_name=$MODEL_NAME --model_base_path=$MODEL_BASE_PATH"]`
-Pokretanje shella je definirano pomoću `sh`, `-c` označava da naredba koja slijedi se treba pokrenuti u shellu, `tensorflow_model_server` je program naredbenog retka koji nudi `TensorFlow` i pokreće TensorFlow Serving REST API, argumenti koji slijede `--model_name` i `--model_base_path` označavaju ime i putanju do modela koji služi za stvaranje predikcija.
+Pokretanje shella je definirano pomoću `sh`, `-c` označava da naredba koja slijedi se treba pokrenuti u shellu, `tensorflow_model_server` je program naredbenog retka koji nudi `TensorFlow` i pokreće TensorFlow Serving REST API, argumenti koji slijede `--model_name` i `--model_base_path` označavaju ime i putanju do modela koji služi za stvarnje predikcija.
 
 Model i pripadne datoteke za stvaranje modela (`predict.py` i `train.py`) nismo sami kreirali, već smo preuzeli postojeće na [poveznici](https://towardsdatascience.com/hosting-models-with-tf-serving-on-docker-aceff9fbf533).
 
