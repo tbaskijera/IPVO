@@ -3,21 +3,23 @@
 
 <head>
     <style>
-        table, th, td {
-          border: 1px solid black;
-          border-collapse: collapse;
+        table,
+        th,
+        td {
+            border: 1px solid black;
+            border-collapse: collapse;
         }
+
         th {
-          border: 2px solid black;
-          border-collapse: collapse;
+            border: 2px solid black;
+            border-collapse: collapse;
         }
-        </style>
-    <title>Tu ispisat bazu samo</title>
+    </style>
+    <title>Database</title>
 </head>
 
 <body onload="displayDB()">
     <div id="dataContainer"></div>
-    Bokic
     <script>
         const dataContainer = document.getElementById("data-container");
         async function fetchData() {
@@ -34,7 +36,7 @@
             }
         }
 
-        async function displayDB(){
+        async function displayDB() {
             const container = document.getElementById("dataContainer");
 
             const dataDB = JSON.parse(await fetchData().then(res => {
@@ -73,7 +75,7 @@
 
             table.appendChild(headerRow);
 
-            for(const item of dataDB) {
+            for (const item of dataDB) {
                 const row = document.createElement("tr");
 
                 const idCell = document.createElement("td");
