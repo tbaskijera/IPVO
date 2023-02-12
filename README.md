@@ -111,6 +111,15 @@ Usluga ```reverse-proxy``` koristi prilagođeni kontekst za izgradnju koji se na
 
 ### database
 
+U stvorenom direktoriju ```IPVO``` potrebno je svoriti novi direktorij ```database``` u kojem će se nalaziti datoteke ```Dockerfile```za izgradnju kontejnera sa bazom podataka i ```script.sql``` stvaranje tablice u bazi podtaka.
+
+```bash
+~/IPVO$ mkdir database
+~/IPVO$ cd database
+~/IPVO/database$ touch Dockerfile
+~/IPVO/database$ touch script.sql
+```
+
 Kao što smo prije spomenuli prvi od kontenjera koje smo kreirali je kontenjer ```database-container```. Njegovo kreiranje pokrenuto je kroz Dockerfile koji se nalazi u direktoriju ```./database.``` Sadržaj tog ```Dockerfile```-a je sljedeći:
 
 ```dockerfile
