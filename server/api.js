@@ -1,12 +1,11 @@
-//api.js
-
 const express = require('express');
 const bodyParser = require('body-parser');
 const router = express.Router();
 const mysql = require('mysql');
-const cors = require('cors');
 const fs = require('fs')
+
 router.use(bodyParser.json());
+
 const con = mysql.createConnection({
     host: "database",
     user: "root",
@@ -15,11 +14,7 @@ const con = mysql.createConnection({
     database: "db",
     charset  : 'utf8'
 });
-var corsOptions = {
-    origin: '*',
-    optionsSuccessStatus: 200
-}
-// initial connection
+
 con.connect(function(err) {
     if(err) throw err;
     console.log("Connected to MYSQL");
@@ -70,7 +65,6 @@ router.post('/db/post', (req, res) => {
     });
 });
 
-// our simple get /jobs API
 router.get('/db/get',(req, res) => {
     con.query("SELECT * FROM predictions", function (err, result, fields) {
         if (err) res.send(err);
