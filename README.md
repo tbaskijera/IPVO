@@ -174,7 +174,7 @@ Svaka instanca tablice imati će sljedeće atribute:
 
 ### reverse-proxy
 
-Zatim je potrebno stvoriti direktorij ```reverse-proxy```, u kojem će se nalaziti datoteke ```Dockerfile``` i `my.conf`, za izgradnju kontejnera sa `nginx` slikom i pripadnom konfiguracijom, respektivno.
+Zatim je potrebno stvoriti direktorij ```reverse-proxy```, u kojem će se nalaziti datoteke ```Dockerfile``` i `myconf.conf`, za izgradnju kontejnera sa `nginx` slikom i pripadnom konfiguracijom, respektivno.
 
 ```bash
 ~/IPVO$ mkdir reverse-proxy
