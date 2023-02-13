@@ -28,8 +28,6 @@ services:
     container_name: tensorflow-serving-container
     ports:
       - "8501:8501"
-    expose:
-      - 8501
     restart: always
 
   server:
@@ -37,8 +35,6 @@ services:
     container_name: server-container
     ports:
       - "3000:3000"
-    expose:
-      - 3000
     restart: always
     depends_on:
       database:
