@@ -536,7 +536,7 @@ Sljedeća datoteka na redu je `db.html`, stranica na kojoj će se prikazivati is
 </html>
 ```
 
-Podatke iz tablice smo dobiti ćemo slanjem zahtjeva na rutu `http://ipvo.to/db/get`, kojeg će proxy proslijediti na adresu s rutom definiranoj u expressu, `http://localhost/db/get`.
+Podatke iz tablice smo dobiti ćemo slanjem zahtjeva na adresu `http://ipvo.to/db/get`, kojeg će proxy proslijediti na adresu s rutom definiranoj u expressu, `http://localhost/db/get`.
 
 Posljednja html datoteka je `predict.html`, koja definira stranicu aplikacije na kojoj se unose podaci koji služe kao parametri predikcije, a zatim i prikazuje sam rezultat:
 
